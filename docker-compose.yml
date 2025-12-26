@@ -31,6 +31,7 @@ services:
       - "5432"
     volumes:
       - database-data:/var/lib/postgresql
+      - ./init-keycloak-db.sql:/docker-entrypoint-initdb.d/init-keycloak-db.sql  # Add this for Keycloak DB init
     healthcheck:
       test: ["CMD", "pg_isready", "-d", "outline", "-U", "user"]
       interval: 30s
@@ -40,15 +41,28 @@ services:
       POSTGRES_USER: 'user'
       POSTGRES_PASSWORD: 'pass'
       POSTGRES_DB: 'outline'
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.4.7
     env_file: ./docker.env
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"  # Localhost only
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-    command: ["start"]
+      KC_DB: postgres  # Explicit DB to fix deprecation
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak  # Connect to new DB
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloakpass  # Match init script
+      KC_HTTP_ENABLED: true  # Allow HTTP (Cloudflare handles HTTPS)
+      KC_PROXY_HEADERS: xforwarded  # For Cloudflare headers (X-Forwarded-*)
+      KC_HOSTNAME: https://keycloak.t99ltd.com  # External URL
+      KC_HOSTNAME_STRICT: true  # Enforce strict hostname checking
+      KC_HOSTNAME_STRICT_HTTPS: true  # Require HTTPS externally
+      KC_PROXY_TRUSTED_ADDRESSES: 127.0.0.1  # Trust local tunnel proxy
+    command: ["start"]  # Production mode
+    depends_on:
+      - postgres  # Ensure DB is ready
 volumes:
   storage-data:
   database-data:
