@@ -59,7 +59,7 @@ services:
       KC_HOSTNAME: https://keycloak.t99ltd.com  # Full frontend URL (v2 option)
       KC_HOSTNAME_STRICT: true  # Enforce strict hostname (v2, default true but explicit)
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: false  # Default, no need for private network dynamic resolution
-    command: ["start", "--optimized"]  # Production mode with optimization for faster startup
+    command: ["start"]  # Production mode with optimization for faster startup
     depends_on:
       - postgres  # Ensure DB is ready
 volumes:
