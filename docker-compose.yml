@@ -3,7 +3,7 @@ services:
     image: docker.getoutline.com/outlinewiki/outline:1.1.0
     env_file: ./docker.env
     expose:
-      - "3000"
+      - "3000:3000"
     volumes:
       - storage-data:/var/lib/outline/data
     depends_on:
