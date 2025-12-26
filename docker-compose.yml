@@ -40,7 +40,15 @@ services:
       POSTGRES_USER: 'user'
       POSTGRES_PASSWORD: 'pass'
       POSTGRES_DB: 'outline'
-
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4.7
+    env_file: ./docker.env
+    ports:
+      - "8080:8080"
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    command: ["start-dev"]
 volumes:
   storage-data:
   database-data:
