@@ -3,7 +3,7 @@ services:
     image: docker.getoutline.com/outlinewiki/outline:1.1.0
     env_file: ./docker.env
     ports:
-      - "127.0.0.1:3000:3000"  # Expose only on localhost for tunnel access
+      - "0.0.0.0:3000:3000"  # Expose only on localhost for tunnel access
     volumes:
       - storage-data:/var/lib/outline/data
     depends_on:
